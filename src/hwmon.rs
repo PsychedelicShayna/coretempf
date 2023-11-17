@@ -24,7 +24,7 @@ pub enum CoreTempDataKind {
 }
 
 impl CoreTempDataKind {
-    pub fn from_path(path: &PathBuf) -> Option<(CoreNumber, CoreTempDataKind)> {
+    pub fn from_path(path: &Path) -> Option<(CoreNumber, CoreTempDataKind)> {
         let file_name = path.file_name().unwrap().to_str().unwrap();
 
         if !file_name.starts_with(CORE_TEMP_PREFIX) {
@@ -59,7 +59,7 @@ impl CoreTempDataKind {
             _ => return None,
         };
 
-        return Some((core_number, kind));
+        Some((core_number, kind))
     }
 }
 
@@ -76,7 +76,7 @@ pub struct TempSensorFiles {
 pub struct HwmCoreTemp(usize, HashMap<CoreNumber, TempSensorFiles>);
 
 impl HwmCoreTemp {
-    pub fn from_dir(path: &PathBuf) -> ah::Result<HwmCoreTemp> {
+    pub fn from_dir(path: &Path) -> ah::Result<HwmCoreTemp> {
         let mut cores: HwmCoreTemp = HwmCoreTemp(0, HashMap::new());
         let mut data: HashMap<CoreNumber, Vec<(PathBuf, CoreTempDataKind)>> = HashMap::new();
 
@@ -213,7 +213,7 @@ impl HwmonDir {
 
                     match remaining.parse::<u64>() {
                         Ok(id) => id,
-                        Err(e) => {
+                        Err(_e) => {
                             println!(
                                 "Failed to parse \"{:?}\" as u64 for hwmon \"{:?}\"",
                                 remaining, dir_name
@@ -234,7 +234,7 @@ impl HwmonDir {
                     continue;
                 }
 
-                let name = match fs::read_to_string(&name_file) {
+                match fs::read_to_string(&name_file) {
                     Ok(name) if name == HWMON_CORE_TEMP_NAME => {
                         let core_temp_sensors = HwmCoreTemp::from_dir(&entry_path)?;
 
@@ -254,7 +254,7 @@ impl HwmonDir {
                         continue;
                     }
 
-                    Err(e) => {
+                    Err(_e) => {
                         println!(
                             "Failed to read name file \"{:?}\" for hwmon \"{:?}\"",
                             &name_file, dir_name

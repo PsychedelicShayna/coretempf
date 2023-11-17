@@ -1,5 +1,5 @@
 use crate::hwmon::*;
-use anyhow as ah;
+
 
 pub enum Mode {
     All,
@@ -17,8 +17,8 @@ pub enum Flag {
 }
 
 pub fn parse_args(args: Vec<String>) -> (Mode, Vec<Flag>) {
-    let mut mode = Mode::All;
-    let mut flags: Vec<String> = Vec::new();
+    let _mode = Mode::All;
+    let _flags: Vec<String> = Vec::new();
 
     let mut mode: Option<Mode> = None;
 
@@ -26,7 +26,7 @@ pub fn parse_args(args: Vec<String>) -> (Mode, Vec<Flag>) {
     // ("-D" | "--debug", _) => flags.push(Flag::Debug),
 
     for (arg, narg) in args.iter().zip((1..=args.len()).map(|i| args.get(i))) {
-        if let None = mode {
+        if mode.is_none() {
             let arg = arg.as_str();
 
             match arg {
@@ -40,7 +40,7 @@ pub fn parse_args(args: Vec<String>) -> (Mode, Vec<Flag>) {
             }
 
             match (arg, narg) {
-                ("-c" | "--core", Some(next_argument)) => {
+                ("-c" | "--core", Some(_next_argument)) => {
                     // let core_list = next_argument
                     //     .split(",")
                     //     .map(|s| {
