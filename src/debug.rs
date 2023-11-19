@@ -7,7 +7,7 @@ macro_rules! debug {
 }
 
 #[cfg(not(feature = "debug"))]
-#[macro_export]
+#[macro_use]
 macro_rules! debug {
     ($($arg:tt)*) => {};
 }

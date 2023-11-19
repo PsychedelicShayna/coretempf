@@ -1,15 +1,17 @@
-mod core_temp;
+#[macro_use]
 mod debug;
-mod unit;
-
-use unit::*;
-
-use std::{collections::HashMap, default, ops::Not, process::exit};
-
-use core_temp::*;
 use debug::*;
 
+mod temps;
+use temps::*;
+
+mod units;
+use units::*;
+
+use std::{collections::HashMap, default, process::exit};
+
 use anyhow as ah;
+
 
 fn parse_args() -> Vec<(String, Vec<String>)> {
     let args: Vec<String> = std::env::args().collect();
