@@ -1,4 +1,4 @@
-# Coretem(pf) - The Printf of Core Temperature Reading
+# Coretempf - The Sane Way to Output Core Temps
 
 Outputting core temperatures, in a user-specified format, akin to `printf`. No more `sensors | rg "^Pack[^\+]+([^ ]+)" -o -r '$1'` shenanigans.
 
