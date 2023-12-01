@@ -1,8 +1,8 @@
 use anyhow as ah;
 use std::collections::HashMap;
 use std::fs;
-use std::io::{self, Read};
-use std::path::{self, Component, Path, PathBuf};
+
+use std::path::{PathBuf};
 
 const SYSFS_HWMON: &str = "/sys/class/hwmon";
 
@@ -117,11 +117,11 @@ impl CoreTemp {
         temperatures.sort();
 
         let median = if temperatures.len() % 2 == 0 {
-            let center = (temperatures.len() / 2) as usize;
+            let center = temperatures.len() / 2;
 
-            ((temperatures[center] + temperatures[center + 1]) / 2) as u64
+            (temperatures[center] + temperatures[center + 1]) / 2
         } else {
-            temperatures[(temperatures.len() / 2) as usize]
+            temperatures[temperatures.len() / 2]
         };
 
         Ok(median)
@@ -185,7 +185,7 @@ impl CoreTemp {
                 continue;
             }
 
-            let mut entries = fs::read_dir(&dir_path)?;
+            let entries = fs::read_dir(&dir_path)?;
             let mut temp_ids_seen = Vec::<u64>::new();
 
             // Try to collect all tempN_xyz files for unque N, into the map,
@@ -215,7 +215,7 @@ impl CoreTemp {
                 // Range start is inclusive, range end is exclusive, so - 6.
                 let temp_id = &entry_name[4..entry_name.len() - 6];
 
-                if !temp_id.chars().all(|c| c.is_digit(10)) {
+                if !temp_id.chars().all(|c| c.is_ascii_digit()) {
                     continue;
                 }
 
@@ -237,7 +237,7 @@ impl CoreTemp {
                 } else if label.starts_with("core") {
                     let core_n = match label
                         .chars()
-                        .filter(|c| c.is_digit(10))
+                        .filter(|c| c.is_ascii_digit())
                         .collect::<String>()
                         .parse::<u64>()
                     {
